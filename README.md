@@ -277,3 +277,50 @@ Rule 21.21 (`<stdatomic.h>`) and POSIX dependencies are confined to
 
 > Release/acquire memory ordering is required for the lock-free SPSC ring
 > buffer and cannot be achieved with standard C11 alone.
+
+---
+
+## Versioning
+
+This project follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`).
+
+| Change | Bump |
+|---|---|
+| Bug fix, no API change | `PATCH` → `0.1.0 → 0.1.1` |
+| New platform primitive or type added, existing API unchanged | `MINOR` → `0.1.0 → 0.2.0` |
+| Function signature changed, type removed, or opaque storage size broken | `MAJOR` → `0.x.y → 1.0.0` |
+
+> While `MAJOR == 0` (pre-release), breaking changes may be reflected in `MINOR` instead.  
+> The API is not considered stable until `v1.0.0`.
+
+### Current version
+
+`v0.1.0` — defined in `include/osal.h`:
+
+```c
+#define LIBOSAL_VERSION_MAJOR 0
+#define LIBOSAL_VERSION_MINOR 1
+#define LIBOSAL_VERSION_PATCH 0
+#define LIBOSAL_VERSION       "0.1.0"
+```
+
+### Compile-time version check
+
+```c
+#include "include/osal.h"
+
+#if LIBOSAL_VERSION_MAJOR == 0 && LIBOSAL_VERSION_MINOR >= 1
+    /* use a feature added in v0.1 */
+#endif
+```
+
+### Git tags
+
+Each release is tagged in the repository:
+
+```bash
+git tag -a v0.1.0 -m "Initial public release"
+git push origin v0.1.0
+```
+
+List all available tags: `git tag -l`

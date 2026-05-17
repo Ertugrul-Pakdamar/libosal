@@ -145,3 +145,25 @@ Rule 21.21 (`<stdatomic.h>`) and POSIX dependencies are confined to
 
 New platform implementations may similarly confine platform-specific deviations
 to a single `.c` file — but must document each deviation with an inline comment.
+
+---
+
+## Bumping the Version
+
+When a contribution changes the public API, the version macros in `include/osal.h`
+must be updated as part of the **same commit**.  
+Follow [Semantic Versioning](https://semver.org/):
+
+| What changed | Which macro | Reset |
+|---|---|---|
+| Bug fix, no API change | `PATCH` | — |
+| New platform primitive or type added | `MINOR` | `PATCH → 0` |
+| Existing function removed, signature changed, or opaque storage size broken | `MAJOR` | `MINOR → 0`, `PATCH → 0` |
+
+> While `MAJOR == 0` (pre-release), breaking changes may be reflected in `MINOR` instead.
+
+### Steps
+
+1. Update the three numeric macros in `include/osal.h`.
+2. Update `LIBOSAL_VERSION` string to match.
+3. The maintainer will create a git tag after merging (`git tag vX.Y.Z`).
