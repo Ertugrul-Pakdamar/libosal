@@ -1,32 +1,105 @@
-NAME   = libosal.a
-CC     = cc
-CFLAGS = -Wall -Wextra -Werror -Iinclude
+# =============================================================================
+# libosal — Operating System Abstraction Layer
+# =============================================================================
+#
+#  Targets:
+#
+#    help      Show this message                      (default)
+#    all       Build libosal.a for the configured platform
+#    examples  Build all programs in examples/
+#    clean     Remove object files and example binaries
+#    fclean    clean + remove libosal.a
+#    re        fclean + all
+#
+#  Platform selection (default: posix):
+#
+#    make all PLATFORM=posix        POSIX / Linux / macOS
+#    make all PLATFORM=freertos     FreeRTOS  (provide freertos/osal_freertos.c)
+#
+# =============================================================================
 
-PLATFORM = posix
+CC       := cc
+AR       := ar
+ARFLAGS  := rcs
 
-SRC = $(PLATFORM)/osal_$(PLATFORM).c
-OBJ = build/osal_$(PLATFORM).o
+NAME     := libosal.a
+PLATFORM ?= posix
+CFLAGS   := -Wall -Wextra -Werror -Iinclude
 
-default: build $(NAME)
+SRC := $(PLATFORM)/osal_$(PLATFORM).c
+OBJ := build/osal_$(PLATFORM).o
 
-$(NAME):
-	@cc -c $(CFLAGS) $(SRC)
-	@mv *.o build/
-	@ar rcs $(NAME) $(OBJ)
-	@echo "Library $(NAME) created successfully."
+RESET  := \033[0m
+BOLD   := \033[1m
+DIM    := \033[2m
+GREEN  := \033[32m
+CYAN   := \033[36m
+YELLOW := \033[33m
+
+# =============================================================================
+
+.DEFAULT_GOAL := help
+
+.PHONY: help
+help:
+	@printf "\n$(BOLD)libosal$(RESET) — available targets\n\n"
+	@printf "  $(CYAN)%-14s$(RESET) %s\n" "make all"      "Build $(NAME)  [PLATFORM=$(PLATFORM)]"
+	@printf "  $(CYAN)%-14s$(RESET) %s\n" "make examples" "Build all programs in examples/"
+	@printf "  $(CYAN)%-14s$(RESET) %s\n" "make clean"    "Remove object files and example binaries"
+	@printf "  $(CYAN)%-14s$(RESET) %s\n" "make fclean"   "clean + remove $(NAME)"
+	@printf "  $(CYAN)%-14s$(RESET) %s\n" "make re"       "fclean + all"
+	@printf "\n  $(DIM)Porting: implement posix/osal_posix.c for your target platform$(RESET)\n\n"
+
+## all: Build libosal.a
+.PHONY: all
+all: $(NAME)
+
+build/osal_$(PLATFORM).o: $(PLATFORM)/osal_$(PLATFORM).c | build
+	@printf "  $(DIM)CC$(RESET)  $<\n"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 build:
 	@mkdir -p build
 
+$(NAME): $(OBJ)
+	@$(AR) $(ARFLAGS) $@ $^
+	@printf "$(GREEN)$(BOLD)✓ $(NAME)$(RESET)  [platform: $(YELLOW)$(PLATFORM)$(RESET)]\n"
+
+# =============================================================================
+# Examples
+# =============================================================================
+
+EXAMPLES_SRC := $(wildcard examples/*.c)
+EXAMPLES_BIN := $(EXAMPLES_SRC:examples/%.c=examples/bin/%)
+EXAMPLES_CFLAGS := $(CFLAGS) -lpthread
+
+## examples: Build all programs in examples/
+.PHONY: examples
+examples: $(NAME) $(EXAMPLES_BIN)
+
+examples/bin/%: examples/%.c $(NAME) | examples/bin
+	@printf "  $(DIM)CC$(RESET)  $<\n"
+	@$(CC) $(CFLAGS) -o $@ $< $(NAME) -lpthread
+	@printf "$(GREEN)✓ $@$(RESET)\n"
+
+examples/bin:
+	@mkdir -p examples/bin
+
+# =============================================================================
+# Cleanup
+# =============================================================================
+
+## clean: Remove object files and example binaries
+.PHONY: clean
 clean:
-	@rm -f $(OBJ)
-	@echo "Cleaned osal."
+	@rm -rf examples/bin $(OBJ)
+	@printf "$(DIM)libosal: cleaned$(RESET)\n"
 
-clean-all: clean
+## fclean: clean + remove libosal.a
+.PHONY: fclean
+fclean: clean
 	@rm -f $(NAME)
-	@rm -rf build
-	@echo "All cleaned osal."
 
-re: clean-all default
-
-.PHONY: default clean clean-all re
+## re: fclean + all
+.PHONY: re
+re: fclean all

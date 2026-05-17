@@ -1,14 +1,16 @@
 /*
-** osal_posix.c — POSIX implementasyonu
+** osal_posix.c — POSIX implementation of the OSAL layer.
 **
-** MISRA C:2012 sapma notu (belgelenmiş):
-**   Bu dosya kasıtlı olarak aşağıdaki standart dışı başlıkları kullanır:
-**     - <pthread.h>  : POSIX thread, mutex, task yönetimi
-**     - <stdatomic.h>: C11 atomik operasyonlar (Rule 21.21 sapması)
-**   Gerekçe: lock-free SPSC için release/acquire bellek sıralaması zorunludur.
-**   Risk analizi: Yalnızca bu dosyayla sınırlı; libqueue'nun geri kalanı
-**                 yalnızca osal.h görür.
-**   Alternatif platform desteği için bu dosyanın eşdeğeri yazılmalıdır.
+** MISRA C:2012 documented deviation:
+**   This file intentionally includes non-standard headers:
+**     - <pthread.h>  : POSIX thread, mutex, and task management.
+**     - <stdatomic.h>: C11 atomic operations (Rule 21.21 deviation).
+**   Rationale: release/acquire memory ordering is required for the lock-free
+**              SPSC ring buffer and cannot be achieved with standard C alone.
+**   Containment: all OS dependencies are confined to this single file.
+**                Every other libqueue/libosal file sees only osal.h.
+**   Porting: to support a new platform, provide an equivalent file
+**            (e.g. freertos/osal_freertos.c) implementing the same API.
 */
 
 #include <pthread.h>
@@ -16,11 +18,9 @@
 #include "../include/osal.h"
 
 _Static_assert(sizeof(pthread_mutex_t) <= OSAL_MUTEX_STORAGE,
-    "OSAL_MUTEX_STORAGE pthread_mutex_t icin kucuk");
+    "OSAL_MUTEX_STORAGE is too small for pthread_mutex_t");
 _Static_assert(sizeof(pthread_t) <= OSAL_TASK_STORAGE,
-    "OSAL_TASK_STORAGE pthread_t icin kucuk");
-_Static_assert(sizeof(int)    == sizeof(int),    "int boyut uyusmazligi");
-_Static_assert(sizeof(size_t) == sizeof(size_t), "size_t boyut uyusmazligi");
+    "OSAL_TASK_STORAGE is too small for pthread_t");
 
 /* ---- Mutex --------------------------------------------------------------- */
 
