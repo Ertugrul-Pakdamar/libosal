@@ -166,102 +166,9 @@ contained, and documented — not an oversight.
 
 ---
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-
----
-
-## Purpose
-
-| Without OSAL | With OSAL |
-|---|---|
-| `#include <pthread.h>` scattered everywhere | All OS code confined to one file |
-| `_Atomic` / `stdatomic.h` in every translation unit | Atomics hidden behind `osal_atomic_*` wrappers |
-| Hard to port to FreeRTOS / Windows / bare-metal | Write one new `osal_<platform>.c` to port |
-
----
-
-## API Overview
-
-### Mutex
-
-```c
-int osal_mutex_init(osal_mutex_t *m);
-int osal_mutex_lock(osal_mutex_t *m);
-int osal_mutex_unlock(osal_mutex_t *m);
-int osal_mutex_destroy(osal_mutex_t *m);
-```
-
-### Task (thread)
-
-```c
-int osal_task_create(osal_task_t *t, void *(*fn)(void *), void *arg);
-int osal_task_join(osal_task_t *t);
-```
-
-### Atomic `int`
-
-```c
-void osal_atomic_int_init(osal_atomic_int_t *a, int val);
-void osal_atomic_int_store(osal_atomic_int_t *a, int val);  /* release */
-int  osal_atomic_int_load(const osal_atomic_int_t *a);      /* acquire */
-```
-
-### Atomic `size_t`
-
-```c
-void   osal_atomic_size_init(osal_atomic_size_t *a, size_t val);
-void   osal_atomic_size_store(osal_atomic_size_t *a, size_t val); /* release */
-size_t osal_atomic_size_load(const osal_atomic_size_t *a);        /* acquire */
-size_t osal_atomic_size_load_relaxed(const osal_atomic_size_t *a);/* relaxed */
-```
-
-Use `_load` (acquire) when reading an index owned by the **other** side of the
-ring buffer. Use `_load_relaxed` when reading an index owned by the **current**
-side — no cross-thread synchronization is needed in that case.
-
----
-
-## Directory Layout
-
-```
-deps/osal/
-├── include/
-│   └── osal.h              public API (no OS headers)
-├── posix/
-│   └── osal_posix.c        POSIX implementation (pthread.h + stdatomic.h)
-├── build/                  object files (generated)
-├── Makefile
-├── .gitignore
-└── README.md
-```
-
----
-
-## Building
-
-```bash
-cd deps/osal
-make        # produces libosal.a
-make clean
-make re
-```
-
-To use as a sub-project from a parent Makefile:
-
-```makefile
-LIBOSAL = deps/osal/libosal.a
-$(LIBOSAL):
-	$(MAKE) -C deps/osal all
-```
-
----
-
 ## Porting to a New Platform
 
-1. Create a new directory inside `deps/osal/`, e.g. `deps/osal/freertos/`.
+1. Create a new directory inside `libosal/`, e.g. `libosal/freertos/`.
 2. Implement every function declared in `include/osal.h` in a new source file
    `osal_freertos.c` using the target platform's primitives.
 3. Update the `Makefile` (or parent build system) to compile your file instead
@@ -270,13 +177,9 @@ $(LIBOSAL):
 
 ---
 
-## MISRA C:2012 Deviation
+## Contributing
 
-Rule 21.21 (`<stdatomic.h>`) and POSIX dependencies are confined to
-`posix/osal_posix.c` only, with documented rationale:
-
-> Release/acquire memory ordering is required for the lock-free SPSC ring
-> buffer and cannot be achieved with standard C11 alone.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
