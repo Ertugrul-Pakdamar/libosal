@@ -88,7 +88,7 @@ run its test suite against your new `libosal.a`.
 ```bash
 # 1. Fork the repo on GitHub
 # 2. Clone your fork
-git clone https://github.com/<your-username>/libosal.git
+git clone https://github.com/Ertugrul-Pakdamar/libosal.git
 cd libosal
 
 # 3. Create a feature branch
