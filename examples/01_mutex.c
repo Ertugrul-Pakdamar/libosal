@@ -10,7 +10,7 @@
  */
 
 #include <stdio.h>
-#include "osal.h"
+#include "libosal.h"
 
 #define INCREMENTS_PER_THREAD 100000
 

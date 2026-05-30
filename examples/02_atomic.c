@@ -11,7 +11,7 @@
  */
 
 #include <stdio.h>
-#include "osal.h"
+#include "libosal.h"
 
 #define ITEM_COUNT 5
 

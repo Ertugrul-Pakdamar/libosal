@@ -6,7 +6,7 @@ A standalone C11 Operating System Abstraction Layer (OSAL) that isolates all
 platform-specific code — threads, mutexes, and atomic operations — behind a
 single clean API.
 
-Consumers include only `osal.h` and have **zero dependency** on any OS or
+Consumers include only `libosal.h` and have **zero dependency** on any OS or
 compiler-extension header. To run on a new platform, one file is written; nothing
 else in the codebase changes.
 
@@ -28,7 +28,7 @@ else in the codebase changes.
 ```
 libosal/
 ├── include/
-│   └── osal.h                   public API  ← the only file consumers see
+│   └── libosal.h                   public API  ← the only file consumers see
 ├── posix/
 │   └── osal_posix.c             POSIX / Linux / macOS implementation
 ├── examples/
@@ -138,7 +138,7 @@ make examples
 ```bash
 # Option A — copy files
 cp libosal.a         /your/project/lib/
-cp include/osal.h    /your/project/include/
+cp include/libosal.h    /your/project/include/
 
 # Link (POSIX requires -lpthread)
 cc main.c -o app -Iinclude -Llib -losal -lpthread
@@ -169,7 +169,7 @@ contained, and documented — not an oversight.
 ## Porting to a New Platform
 
 1. Create a new directory inside `libosal/`, e.g. `libosal/freertos/`.
-2. Implement every function declared in `include/osal.h` in a new source file
+2. Implement every function declared in `include/libosal.h` in a new source file
    `osal_freertos.c` using the target platform's primitives.
 3. Update the `Makefile` (or parent build system) to compile your file instead
    of `posix/osal_posix.c`.
@@ -198,7 +198,7 @@ This project follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PA
 
 ### Current version
 
-`v0.1.0` — defined in `include/osal.h`:
+`v0.1.0` — defined in `include/libosal.h`:
 
 ```c
 #define LIBOSAL_VERSION_MAJOR 0
@@ -210,7 +210,7 @@ This project follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PA
 ### Compile-time version check
 
 ```c
-#include "include/osal.h"
+#include "include/libosal.h"
 
 #if LIBOSAL_VERSION_MAJOR == 0 && LIBOSAL_VERSION_MINOR >= 1
     /* use a feature added in v0.1 */

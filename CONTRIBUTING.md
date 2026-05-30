@@ -26,9 +26,9 @@ libosal/windows/osal_windows.c
 libosal/zephyr/osal_zephyr.c
 ```
 
-### 2. Implement every function declared in `include/osal.h`
+### 2. Implement every function declared in `include/libosal.h`
 
-Open `include/osal.h` — every function listed there must have an implementation
+Open `include/libosal.h` — every function listed there must have an implementation
 in your file. There are 14 functions total across four groups:
 
 | Group | Functions |
@@ -43,7 +43,7 @@ memory ordering semantics.
 
 ### 3. Verify storage size constants
 
-`include/osal.h` defines two constants that must be large enough to hold the
+`include/libosal.h` defines two constants that must be large enough to hold the
 platform's native types:
 
 ```c
@@ -53,7 +53,7 @@ platform's native types:
 
 Add `_Static_assert` checks at the top of your implementation file, as done in
 `posix/osal_posix.c`. If your platform requires larger values, update the
-constants in `osal.h` and explain the reasoning in your PR.
+constants in `libosal.h` and explain the reasoning in your PR.
 
 ### 4. Build and test
 
@@ -105,7 +105,7 @@ make re PLATFORM=freertos
 ## Code style
 
 - C11, compiled with `-Wall -Wextra -Werror` — zero warnings required
-- No `#include <pthread.h>`, `<stdatomic.h>`, or any OS header in `include/osal.h`
+- No `#include <pthread.h>`, `<stdatomic.h>`, or any OS header in `include/libosal.h`
   — those belong exclusively in the implementation file
 - Use `memory_order_release` for stores and `memory_order_acquire` for cross-thread
   loads to ensure correctness of the SPSC ring buffer
@@ -150,7 +150,7 @@ to a single `.c` file — but must document each deviation with an inline commen
 
 ## Bumping the Version
 
-When a contribution changes the public API, the version macros in `include/osal.h`
+When a contribution changes the public API, the version macros in `include/libosal.h`
 must be updated as part of the **same commit**.  
 Follow [Semantic Versioning](https://semver.org/):
 
@@ -164,6 +164,6 @@ Follow [Semantic Versioning](https://semver.org/):
 
 ### Steps
 
-1. Update the three numeric macros in `include/osal.h`.
+1. Update the three numeric macros in `include/libosal.h`.
 2. Update `LIBOSAL_VERSION` string to match.
 3. The maintainer will create a git tag after merging (`git tag vX.Y.Z`).
