@@ -17,8 +17,12 @@
  *   SPSC ring buffer and cannot be achieved with standard C alone.
  */
 
-#ifndef OSAL_H
-# define OSAL_H
+#ifndef LIBOSAL_H
+# define LIBOSAL_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* ---- Version ------------------------------------------------------------- */
 # define LIBOSAL_VERSION_MAJOR 0
@@ -157,4 +161,7 @@ size_t osal_atomic_size_load(const osal_atomic_size_t *a);
  */
 size_t osal_atomic_size_load_relaxed(const osal_atomic_size_t *a);
 
+#ifdef __cplusplus
+}
+#endif
 #endif
