@@ -1,5 +1,5 @@
 /**
- * @file osal.h
+ * @file libosal.h
  * @brief Operating System Abstraction Layer — public API.
  *
  * Isolates all platform-specific code (pthreads, stdatomic) from the rest of

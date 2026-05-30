@@ -8,12 +8,12 @@
 **   Rationale: release/acquire memory ordering is required for the lock-free
 **              SPSC ring buffer and cannot be achieved with standard C alone.
 **   Containment: all OS dependencies are confined to this single file.
-**                Every other libqueue/libosal file sees only osal.h.
+**                Every other libqueue/libosal file sees only libosal.h.
 **   Porting: to support a new platform, provide an equivalent file
 **            (e.g. freertos/osal_freertos.c) implementing the same API.
 */
 
-#include "../include/osal.h"
+#include "../include/libosal.h"
 
 /* ---- Mutex --------------------------------------------------------------- */
 
