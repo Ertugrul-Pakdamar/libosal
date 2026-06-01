@@ -41,7 +41,7 @@ static void *producer(void *arg)
     return (NULL);
 }
 
-int main(void)
+int32_t main(void)
 {
     t_channel  ch;
     osal_task_t producer_task;
@@ -53,7 +53,7 @@ int main(void)
     osal_task_create(&producer_task, producer, &ch);
 
     /* Consumer: wait for each item, then acknowledge. */
-    int received = 0;
+    int32_t received = 0;
     while (received < ITEM_COUNT)
     {
         /* Spin until producer signals (acquire). */
