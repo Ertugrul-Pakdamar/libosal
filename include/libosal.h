@@ -26,9 +26,9 @@ extern "C" {
 
 /* ---- Version ------------------------------------------------------------- */
 # define LIBOSAL_VERSION_MAJOR 0
-# define LIBOSAL_VERSION_MINOR 1
+# define LIBOSAL_VERSION_MINOR 2
 # define LIBOSAL_VERSION_PATCH 0
-# define LIBOSAL_VERSION       "0.1.0"
+# define LIBOSAL_VERSION       "0.2.0"
 
 # include <stddef.h>
 
@@ -160,6 +160,20 @@ size_t osal_atomic_size_load(const osal_atomic_size_t *a);
  * @return Current value.
  */
 size_t osal_atomic_size_load_relaxed(const osal_atomic_size_t *a);
+
+/**
+ * @brief Fetch and bitwise OR with release memory ordering.
+ * @param a   Initialized atomic size_t.
+ * @param val Value to OR.
+ */
+void osal_atomic_size_fetch_or(osal_atomic_size_t *a, size_t val);
+
+/**
+ * @brief Fetch and bitwise AND with release memory ordering.
+ * @param a   Initialized atomic size_t.
+ * @param val Value to AND.
+ */
+void osal_atomic_size_fetch_and(osal_atomic_size_t *a, size_t val);
 
 #ifdef __cplusplus
 }

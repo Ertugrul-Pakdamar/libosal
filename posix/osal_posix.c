@@ -98,3 +98,13 @@ size_t  osal_atomic_size_load_relaxed(const osal_atomic_size_t *a)
     return (atomic_load_explicit((const _Atomic size_t *)&a->_val,
                 memory_order_relaxed));
 }
+
+void    osal_atomic_size_fetch_or(osal_atomic_size_t *a, size_t val)
+{
+    atomic_fetch_or_explicit((_Atomic size_t *)&a->_val, val, memory_order_release);
+}
+
+void    osal_atomic_size_fetch_and(osal_atomic_size_t *a, size_t val)
+{
+    atomic_fetch_and_explicit((_Atomic size_t *)&a->_val, val, memory_order_release);
+}
