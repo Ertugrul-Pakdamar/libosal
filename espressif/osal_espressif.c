@@ -20,14 +20,14 @@ _Static_assert(sizeof(TaskHandle_t) <= OSAL_TASK_STORAGE,
 
 /* ---- Mutex --------------------------------------------------------------- */
 
-int     osal_mutex_init(osal_mutex_t *m)
+int32_t     osal_mutex_init(osal_mutex_t *m)
 {
     SemaphoreHandle_t *sem = (SemaphoreHandle_t *)m->_s;
     *sem = xSemaphoreCreateMutex();
     return (*sem == NULL ? 1 : 0);
 }
 
-int     osal_mutex_lock(osal_mutex_t *m)
+int32_t     osal_mutex_lock(osal_mutex_t *m)
 {
     SemaphoreHandle_t *sem = (SemaphoreHandle_t *)m->_s;
     if (xSemaphoreTake(*sem, portMAX_DELAY) == pdTRUE)
@@ -35,7 +35,7 @@ int     osal_mutex_lock(osal_mutex_t *m)
     return (1);
 }
 
-int     osal_mutex_unlock(osal_mutex_t *m)
+int32_t     osal_mutex_unlock(osal_mutex_t *m)
 {
     SemaphoreHandle_t *sem = (SemaphoreHandle_t *)m->_s;
     if (xSemaphoreGive(*sem) == pdTRUE)
@@ -43,7 +43,7 @@ int     osal_mutex_unlock(osal_mutex_t *m)
     return (1);
 }
 
-int     osal_mutex_destroy(osal_mutex_t *m)
+int32_t     osal_mutex_destroy(osal_mutex_t *m)
 {
     SemaphoreHandle_t *sem = (SemaphoreHandle_t *)m->_s;
     vSemaphoreDelete(*sem);
@@ -52,7 +52,7 @@ int     osal_mutex_destroy(osal_mutex_t *m)
 
 /* ---- Task ---------------------------------------------------------------- */
 
-int     osal_task_create(osal_task_t *t, void *(*fn)(void *), void *arg)
+int32_t     osal_task_create(osal_task_t *t, void *(*fn)(void *), void *arg)
 {
     TaskHandle_t *handle = (TaskHandle_t *)t->_s;
     /* Create task with default parameters. Priority 5 is moderate.
@@ -68,7 +68,7 @@ int     osal_task_create(osal_task_t *t, void *(*fn)(void *), void *arg)
     return (res == pdPASS ? 0 : 1);
 }
 
-int     osal_task_join(osal_task_t *t)
+int32_t     osal_task_join(osal_task_t *t)
 {
     /* FreeRTOS does not have a native "join" like pthreads.
        For a complete OSAL, one would typically use an EventGroup or TaskNotify
@@ -80,21 +80,21 @@ int     osal_task_join(osal_task_t *t)
     return (0);
 }
 
-/* ---- Atomic int ---------------------------------------------------------- */
+/* ---- Atomic int32_t ---------------------------------------------------------- */
 
-void    osal_atomic_int_init(osal_atomic_int_t *a, int val)
+void    osal_atomic_int_init(osal_atomic_int_t *a, int32_t val)
 {
-    atomic_init((_Atomic int *)&a->_val, val);
+    atomic_init((_Atomic int32_t *)&a->_val, val);
 }
 
-void    osal_atomic_int_store(osal_atomic_int_t *a, int val)
+void    osal_atomic_int_store(osal_atomic_int_t *a, int32_t val)
 {
-    atomic_store_explicit((_Atomic int *)&a->_val, val, memory_order_release);
+    atomic_store_explicit((_Atomic int32_t *)&a->_val, val, memory_order_release);
 }
 
-int     osal_atomic_int_load(const osal_atomic_int_t *a)
+int32_t     osal_atomic_int_load(const osal_atomic_int_t *a)
 {
-    return (atomic_load_explicit((const _Atomic int *)&a->_val, memory_order_acquire));
+    return (atomic_load_explicit((const _Atomic int32_t *)&a->_val, memory_order_acquire));
 }
 
 /* ---- Atomic size_t ------------------------------------------------------- */

@@ -24,53 +24,53 @@ _Static_assert(sizeof(pthread_t) <= OSAL_TASK_STORAGE,
 
 /* ---- Mutex --------------------------------------------------------------- */
 
-int     osal_mutex_init(osal_mutex_t *m)
+int32_t     osal_mutex_init(osal_mutex_t *m)
 {
     return (pthread_mutex_init((pthread_mutex_t *)m->_s, NULL));
 }
 
-int     osal_mutex_lock(osal_mutex_t *m)
+int32_t     osal_mutex_lock(osal_mutex_t *m)
 {
     return (pthread_mutex_lock((pthread_mutex_t *)m->_s));
 }
 
-int     osal_mutex_unlock(osal_mutex_t *m)
+int32_t     osal_mutex_unlock(osal_mutex_t *m)
 {
     return (pthread_mutex_unlock((pthread_mutex_t *)m->_s));
 }
 
-int     osal_mutex_destroy(osal_mutex_t *m)
+int32_t     osal_mutex_destroy(osal_mutex_t *m)
 {
     return (pthread_mutex_destroy((pthread_mutex_t *)m->_s));
 }
 
 /* ---- Task ---------------------------------------------------------------- */
 
-int     osal_task_create(osal_task_t *t, void *(*fn)(void *), void *arg)
+int32_t     osal_task_create(osal_task_t *t, void *(*fn)(void *), void *arg)
 {
     return (pthread_create((pthread_t *)t->_s, NULL, fn, arg));
 }
 
-int     osal_task_join(osal_task_t *t)
+int32_t     osal_task_join(osal_task_t *t)
 {
     return (pthread_join(*(pthread_t *)t->_s, NULL));
 }
 
-/* ---- Atomic int ---------------------------------------------------------- */
+/* ---- Atomic int32_t ---------------------------------------------------------- */
 
-void    osal_atomic_int_init(osal_atomic_int_t *a, int val)
+void    osal_atomic_int_init(osal_atomic_int_t *a, int32_t val)
 {
-    atomic_init((_Atomic int *)&a->_val, val);
+    atomic_init((_Atomic int32_t *)&a->_val, val);
 }
 
-void    osal_atomic_int_store(osal_atomic_int_t *a, int val)
+void    osal_atomic_int_store(osal_atomic_int_t *a, int32_t val)
 {
-    atomic_store_explicit((_Atomic int *)&a->_val, val, memory_order_release);
+    atomic_store_explicit((_Atomic int32_t *)&a->_val, val, memory_order_release);
 }
 
-int     osal_atomic_int_load(const osal_atomic_int_t *a)
+int32_t     osal_atomic_int_load(const osal_atomic_int_t *a)
 {
-    return (atomic_load_explicit((const _Atomic int *)&a->_val,
+    return (atomic_load_explicit((const _Atomic int32_t *)&a->_val,
                 memory_order_acquire));
 }
 

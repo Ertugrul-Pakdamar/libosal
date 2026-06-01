@@ -24,7 +24,7 @@ static void *increment_worker(void *arg)
 {
     t_worker_args *a = (t_worker_args *)arg;
 
-    for (int i = 0; i < INCREMENTS_PER_THREAD; i++)
+    for (int32_t i = 0; i < INCREMENTS_PER_THREAD; i++)
     {
         osal_mutex_lock(a->lock);
         (*a->counter)++;
@@ -33,7 +33,7 @@ static void *increment_worker(void *arg)
     return (NULL);
 }
 
-int main(void)
+int32_t main(void)
 {
     osal_mutex_t  lock;
     osal_task_t   t1, t2;
