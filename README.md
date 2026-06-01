@@ -31,6 +31,8 @@ libosal/
 │   └── libosal.h                   public API  ← the only file consumers see
 ├── posix/
 │   └── osal_posix.c             POSIX / Linux / macOS implementation
+├── espressif/
+│   └── osal_espressif.c         ESP-IDF / FreeRTOS implementation
 ├── examples/
 │   ├── 01_mutex.c               two threads, shared counter, mutex protection
 │   └── 02_atomic.c              lock-free producer/consumer with release/acquire
@@ -89,6 +91,10 @@ void   osal_atomic_size_init(osal_atomic_size_t *a, size_t val);
 void   osal_atomic_size_store(osal_atomic_size_t *a, size_t val);        /* release */
 size_t osal_atomic_size_load(const osal_atomic_size_t *a);               /* acquire */
 size_t osal_atomic_size_load_relaxed(const osal_atomic_size_t *a);       /* relaxed */
+
+/* Bitwise operations */
+void   osal_atomic_size_fetch_or(osal_atomic_size_t *a, size_t val);     /* release */
+void   osal_atomic_size_fetch_and(osal_atomic_size_t *a, size_t val);    /* release */
 ```
 
 Use `_load` (acquire) when reading an index owned by the **other** side of a
