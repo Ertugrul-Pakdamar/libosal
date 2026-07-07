@@ -54,6 +54,9 @@ typedef struct { int32_t    _val; } osal_atomic_int_t;
 /** Atomic size_t. Access only through osal_atomic_size_* functions. */
 typedef struct { size_t _val; } osal_atomic_size_t;
 
+/** Atomic pointer. Access only through osal_atomic_ptr_* functions. */
+typedef struct { void* _val; } osal_atomic_ptr_t;
+
 /* ---- Mutex --------------------------------------------------------------- */
 
 /**
@@ -174,9 +177,59 @@ void osal_atomic_size_fetch_or(osal_atomic_size_t *a, size_t val);
  * @param a   Initialized atomic size_t.
  * @param val Value to AND.
  */
-void osal_atomic_size_fetch_and(osal_atomic_size_t *a, size_t val);
+void    osal_atomic_size_fetch_and(osal_atomic_size_t *a, size_t val);
+
+/**
+ * @brief Compare and exchange with acq_rel memory ordering.
+ * @param a       Initialized atomic size_t.
+ * @param expected Pointer to expected value. Updated to current on failure.
+ * @param desired  Value to store on success.
+ * @return 1 on success, 0 on failure.
+ */
+int32_t osal_atomic_size_compare_exchange(osal_atomic_size_t *a, size_t *expected, size_t desired);
+
+/* ---- Atomic pointer ------------------------------------------------------ */
+
+/**
+ * @brief Initialize an atomic pointer.
+ * @param a   Uninitialized atomic pointer.
+ * @param val Initial value.
+ */
+void osal_atomic_ptr_init(osal_atomic_ptr_t *a, void *val);
+
+/**
+ * @brief Store a pointer with release memory ordering.
+ * @param a   Initialized atomic pointer.
+ * @param val Pointer to store.
+ */
+void osal_atomic_ptr_store(osal_atomic_ptr_t *a, void *val);
+
+/**
+ * @brief Load a pointer with acquire memory ordering.
+ * @param a Initialized atomic pointer.
+ * @return Current pointer value.
+ */
+void* osal_atomic_ptr_load(const osal_atomic_ptr_t *a);
+
+/**
+ * @brief Atomic exchange with acq_rel memory ordering.
+ * @param a   Initialized atomic pointer.
+ * @param val New pointer value.
+ * @return Previous pointer value.
+ */
+void* osal_atomic_ptr_exchange(osal_atomic_ptr_t *a, void *val);
+
+/**
+ * @brief Compare and exchange with acq_rel memory ordering.
+ * @param a       Initialized atomic pointer.
+ * @param expected Pointer to expected value. Updated to current on failure.
+ * @param desired  Value to store on success.
+ * @return 1 on success, 0 on failure.
+ */
+int32_t osal_atomic_ptr_compare_exchange(osal_atomic_ptr_t *a, void **expected, void *desired);
 
 #ifdef __cplusplus
 }
 #endif
 #endif
+
