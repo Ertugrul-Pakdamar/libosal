@@ -128,3 +128,37 @@ void    osal_atomic_size_fetch_and(osal_atomic_size_t *a, size_t val)
 {
     atomic_fetch_and_explicit((_Atomic size_t *)&a->_val, val, memory_order_release);
 }
+
+int32_t osal_atomic_size_compare_exchange(osal_atomic_size_t *a, size_t *expected, size_t desired)
+{
+    return atomic_compare_exchange_weak_explicit((_Atomic size_t *)&a->_val, expected, desired,
+        memory_order_acq_rel, memory_order_acquire);
+}
+
+/* ---- Atomic pointer ------------------------------------------------------ */
+
+void    osal_atomic_ptr_init(osal_atomic_ptr_t *a, void *val)
+{
+    atomic_init((_Atomic(void *) *)&a->_val, val);
+}
+
+void    osal_atomic_ptr_store(osal_atomic_ptr_t *a, void *val)
+{
+    atomic_store_explicit((_Atomic(void *) *)&a->_val, val, memory_order_release);
+}
+
+void*   osal_atomic_ptr_load(const osal_atomic_ptr_t *a)
+{
+    return atomic_load_explicit((const _Atomic(void *) *)&a->_val, memory_order_acquire);
+}
+
+void*   osal_atomic_ptr_exchange(osal_atomic_ptr_t *a, void *val)
+{
+    return atomic_exchange_explicit((_Atomic(void *) *)&a->_val, val, memory_order_acq_rel);
+}
+
+int32_t osal_atomic_ptr_compare_exchange(osal_atomic_ptr_t *a, void **expected, void *desired)
+{
+    return atomic_compare_exchange_weak_explicit((_Atomic(void *) *)&a->_val, expected, desired,
+        memory_order_acq_rel, memory_order_acquire);
+}
